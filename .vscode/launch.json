@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main (text completion)",
+            "request": "launch",
+            "mainClass": "eus.ehu.Main",
+            "projectName": "javaLLM",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "MainJSON (structured JSON completion)",
+            "request": "launch",
+            "mainClass": "eus.ehu.MainJSON",
+            "projectName": "javaLLM",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

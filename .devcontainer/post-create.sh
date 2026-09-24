@@ -45,8 +45,8 @@ cat <<'EOF'
 
 ==> Once it's done, run the demo from the repository root:
 
-    mvn exec:java -Dexec.mainClass="eus.ehu.Main"        # text completion
-    mvn exec:java -Dexec.mainClass="eus.ehu.MainJSON"    # structured JSON completion
+    mvn exec:exec -Dexec.executable=java '-Dexec.args=-classpath %classpath eus.ehu.Main'        # text completion
+    mvn exec:exec -Dexec.executable=java '-Dexec.args=-classpath %classpath eus.ehu.MainJSON'    # structured JSON completion
 
   or use the fat jar built by this script:
 

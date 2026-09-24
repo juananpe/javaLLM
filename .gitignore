@@ -17,7 +17,8 @@ buildNumber.properties
 *.ipr
 
 # VS Code
-.vscode/
+.vscode/*
+!.vscode/launch.json
 *.code-workspace
 
 # Eclipse

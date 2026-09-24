@@ -47,14 +47,21 @@ Prerequisites:
 Run the basic text completion example:
 
 ```bash
-mvn exec:java -Dexec.mainClass="eus.ehu.Main"
+mvn exec:exec -Dexec.executable=java '-Dexec.args=-classpath %classpath eus.ehu.Main'
 ```
 
 Run the structured JSON completion example (uses Gson for parsing):
 
 ```bash
-mvn exec:java -Dexec.mainClass="eus.ehu.MainJSON"
+mvn exec:exec -Dexec.executable=java '-Dexec.args=-classpath %classpath eus.ehu.MainJSON'
 ```
+
+> Why `exec:exec` instead of `exec:java`: `exec:java` runs the app inside Maven's own JVM, which forcibly interrupts OkHttp's shared housekeeping threads on exit and logs harmless `will linger despite being asked to die via interruption` warnings. `exec:exec` launches a normal child `java` process using Maven's computed classpath, so it exits cleanly with no warnings.
+
+> To hide Maven's own build logs and only see the app's output, add `-q -Dstyle.color=never`:
+> ```bash
+> mvn -q -Dstyle.color=never exec:exec -Dexec.executable=java '-Dexec.args=-classpath %classpath eus.ehu.Main'
+> ```
 
 `mvn package` also builds a self-contained jar, which is handy for a live demo (no Maven involved):
 
@@ -64,8 +71,6 @@ java -cp target/javaLLM-jar-with-dependencies.jar eus.ehu.MainJSON
 ```
 
 > `config.properties` is read from the current directory, so run these commands from the repository root.
-
-> Note: `mvn exec:java` may print `WARNING: ... will linger despite being asked to die via interruption` after the app finishes. This comes from `exec-maven-plugin` forcefully interrupting OkHttp's internal housekeeping threads inside Maven's own JVM; it's harmless and doesn't happen with the `java -jar ...` alternative above.
 
 ## Project Structure
 
