@@ -1,0 +1,53 @@
+// Dev Container for javaLLM (https://github.com/juananpe/javaLLM)
+//
+// Java 25 + Maven 3.9 ready to run the demo: nothing to install on your machine.
+// Open this folder in VS Code and run "Dev Containers: Reopen in Container".
+{
+  "name": "javaLLM (Java 25 + Maven)",
+
+  // Official dev container image: Debian bookworm + Microsoft OpenJDK 25.
+  // Tag scheme is <images-major>-<java-version>-<debian>; see mcr.microsoft.com/devcontainers/java.
+  "image": "mcr.microsoft.com/devcontainers/java:3-25-bookworm",
+
+  // The image above ships the JDK only, so Maven is added by the Java feature.
+  // "version": "none" keeps the JDK 25 provided by the image.
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true",
+      "installGradle": "false"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Extension Pack for Java: language support, debugger, test runner, Maven and IntelliCode.
+        "vscjava.vscode-java-pack"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.compile.nullAnalysis.mode": "automatic",
+        "java.debug.settings.onBuildFailureProceed": true,
+        "editor.formatOnSave": false
+      }
+    }
+  },
+
+  // Keep the Maven local repository in a named volume so downloaded dependencies
+  // survive container rebuilds (first build is then much faster).
+  "mounts": [
+    "source=javaLLM-m2-cache,target=/home/vscode/.m2,type=volume"
+  ],
+
+  // Optional convenience: if you export OPENROUTER_API_KEY on the host, the setup
+  // script writes it into config.properties for you. Otherwise a placeholder is created.
+  "remoteEnv": {
+    "OPENROUTER_API_KEY": "${localEnv:OPENROUTER_API_KEY}"
+  },
+
+  // Installs the project (see .devcontainer/post-create.sh).
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  "remoteUser": "vscode"
+}

@@ -25,33 +25,36 @@ public class MainJSON {
                 .apiKey(loadApiKey())
                 .baseUrl("https://openrouter.ai/api/v1")
                 .build();
+        try {
+            ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                    .model(ChatModel.of("deepseek/deepseek-v4-pro"))
+                    .addSystemMessage("You are a helpful assistant. Answer in JSON format. Use this JSON Schema: { languages: [ { name, year_created } ] }")
+                    .addUserMessage("List three programming languages with their year of creation.")
+                    .responseFormat(ResponseFormatJsonObject.builder().build())
+                    .build();
+            ChatCompletion completion = client.chat().completions().create(params);
 
-ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-            .model(ChatModel.of("deepseek/deepseek-v4-pro"))
-            .addSystemMessage("You are a helpful assistant. Answer in JSON format. Use this JSON Schema: { languages: [ { name, year_created } ] }")
-            .addUserMessage("List three programming languages with their year of creation.")
-            .responseFormat(ResponseFormatJsonObject.builder().build())
-            .build();
-        ChatCompletion completion = client.chat().completions().create(params);
+            String jsonResult = completion.choices().get(0).message().content().orElse("");
 
-        String jsonResult = completion.choices().get(0).message().content().orElse("");
-        
-        if (jsonResult.trim().startsWith("```json")) {
-            jsonResult = jsonResult.replace("```json", "").replace("```", "").trim();
-        }
-
-        System.out.println("Raw JSON result from LLM:");
-        System.out.println(jsonResult);
-
-        Gson gson = new Gson();
-        LanguageResponse response = gson.fromJson(jsonResult, LanguageResponse.class);
-
-        if (response != null && response.languages() != null) {
-            for (Language lang : response.languages()) {
-                System.out.printf("%s created in %d%n", lang.name(), lang.year_created());
+            if (jsonResult.trim().startsWith("```json")) {
+                jsonResult = jsonResult.replace("```json", "").replace("```", "").trim();
             }
-        } else {
-            System.out.println("Error: El LLM no devolvió el formato esperado.");
+
+            System.out.println("Raw JSON result from LLM:");
+            System.out.println(jsonResult);
+
+            Gson gson = new Gson();
+            LanguageResponse response = gson.fromJson(jsonResult, LanguageResponse.class);
+
+            if (response != null && response.languages() != null) {
+                for (Language lang : response.languages()) {
+                    System.out.printf("%s created in %d%n", lang.name(), lang.year_created());
+                }
+            } else {
+                System.out.println("Error: El LLM no devolvió el formato esperado.");
+            }
+        } finally {
+            client.close();
         }
     }
 

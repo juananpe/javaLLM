@@ -19,18 +19,21 @@ public class Main {
                 .apiKey(loadApiKey())
                 .baseUrl("https://openrouter.ai/api/v1")
                 .build();
+        try {
+            ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
+                    .model(ChatModel.of("deepseek/deepseek-v4-flash"))
+                    .addSystemMessage("Eres un asistente útil.")
+                    .addUserMessage("Lista tres lenguajes de programación con su año de creación.")
+                    .build();
+            ChatCompletion completion = client.chat().completions().create(params);
 
-        ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
-                .model(ChatModel.of("deepseek/deepseek-v4-flash"))
-                .addSystemMessage("Eres un asistente útil.")
-                .addUserMessage("Lista tres lenguajes de programación con su año de creación.")
-                .build();
-        ChatCompletion completion = client.chat().completions().create(params);
+            String result = completion.choices().get(0).message().content().orElse("");
 
-        String result = completion.choices().get(0).message().content().orElse("");
-
-        System.out.println("Raw result from LLM:");
-        System.out.println(result);
+            System.out.println("Raw result from LLM:");
+            System.out.println(result);
+        } finally {
+            client.close();
+        }
     }
 
     private static String loadApiKey() throws IOException {
