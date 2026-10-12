@@ -70,6 +70,20 @@ java -jar target/javaLLM-jar-with-dependencies.jar            # Main
 java -cp target/javaLLM-jar-with-dependencies.jar eus.ehu.MainJSON
 ```
 
+To package and run `Main` in one command while keeping Maven's output quiet:
+
+```bash
+mvn -q package && java -jar target/javaLLM-jar-with-dependencies.jar
+```
+
+This starts the application in its own JVM, avoiding the OkHttp thread warnings caused by `exec:java`.
+
+To run `MainJSON` the same way, specify the class explicitly:
+
+```bash
+mvn -q package && java -cp target/javaLLM-jar-with-dependencies.jar eus.ehu.MainJSON
+```
+
 > `config.properties` is read from the current directory, so run these commands from the repository root.
 
 ## Project Structure
